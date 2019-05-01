@@ -26,7 +26,7 @@ module.exports = async (req, res) => {
                     console.log(err);
                     return reject(err);
                 }
-                if (result) return resolve(true);
+                return resolve(result);
             });
         });
 

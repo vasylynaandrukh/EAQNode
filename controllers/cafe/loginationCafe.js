@@ -1,4 +1,3 @@
-
 const dataBase = require('../../dataBase').getInstance();
 const tokinazer = require('../../helpers/tokinazer');
 const bcrypt = require('bcrypt');
@@ -9,7 +8,6 @@ module.exports = async (req, res) => {
         const Cafe = dataBase.getModel('Cafe');
 
         const {name, password} = req.body;
-
         if (!name || !password) throw new Error('Some fields are empty');
 
         const isPresent = await Cafe.findOne({

@@ -1,32 +1,30 @@
 const dataBase = require('../../dataBase').getInstance();
 const tokenVerify = require('../../helpers/tokenVerificator');
 const secret = require('../../config/secret');
+const userRoles = require('../../config/userRoles');
 module.exports = async (req, res) => {
     try {
         const Cafe = dataBase.getModel('Cafe');
-        const User = dataBase.getModel('User');
-        const cafeForDelete = req.params.name;
-        if (!cafeForDelete) throw  new Error('No cafe name');
+
+        const nameCafeForDelete = req.params.name;
+        if (!nameCafeForDelete) throw  new Error('No cafe for delete ');
+
         const token = req.get('Authorization');
-
         if (!token) throw new Error('No token');
-        const {id: user_id} = tokenVerify(token, secret);
 
-        const isUser = await User.findOne({
-            where: {
-                id: user_id
-            }
-        });
-        if (isUser.name === 'admin') {
-            await Cafe.destroy({
+        const {admin} = userRoles;
+
+        const {name: nameFromToken} = tokenVerify(token, secret);
+        if (nameFromToken !==admin) throw new Error('You are not admin');
+               await Cafe.destroy({
                 where: {
-                    name: cafeForDelete
+                    name
                 }
-            })
-        };
+            });
+
         res.json({
             success: true,
-            message: `Cafe ${cafeForDelete} successfully deleted`
+            message: `Cafe ${name} successfully deleted`
         });
 
     } catch (e) {
